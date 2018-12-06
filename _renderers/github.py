@@ -19,11 +19,17 @@ def render(dict_data, saltenv="", sls="", **kwargs):
     body = json.loads(kwargs["data"]["body"])
     headers = kwargs["data"]["headers"]
 
-    event.fire_event({"repo": repo, "ref": ref}, "autodeploy/check/github")
-
     if headers["X-Github-Event"] != "push":
         log.warning("Skipping %s event", headers["X-Github-Event"])
         return lowstate
+
+    try:
+        event.fire_event(
+            {"repo": body["repository"]["full_name"], "ref": body["ref"]},
+            "autodeploy/check/github",
+        )
+    except:
+        log.exception("Unable to log check")
 
     for repo in dict_data:
         if repo != body["repository"]["full_name"]:
