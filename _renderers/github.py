@@ -25,7 +25,12 @@ def render(dict_data, saltenv="", sls="", **kwargs):
 
     try:
         event.fire_event(
-            {"repo": body["repository"]["full_name"], "ref": body["ref"]},
+            {
+                "repo": body["repository"]["full_name"],
+                "ref": body["ref"],
+                "sls": sls,
+                "saltenv": saltenv,
+            },
             "autodeploy/check/github",
         )
     except:
@@ -44,7 +49,13 @@ def render(dict_data, saltenv="", sls="", **kwargs):
             for state in dict_data[repo][ref]:
                 lowstate["%s:%s:%s" % (repo, ref, state)] = dict_data[repo][ref][state]
                 event.fire_event(
-                    {"repo": repo, "ref": ref, "state": dict_data[repo][ref][state]},
+                    {
+                        "repo": repo,
+                        "ref": ref,
+                        "state": dict_data[repo][ref][state],
+                        "sls": sls,
+                        "saltenv": saltenv,
+                    },
                     "autodeploy/found/github",
                 )
 
