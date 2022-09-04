@@ -64,7 +64,7 @@ def render(dict_data, saltenv="", sls="", tag="", **kwargs):
                 continue
 
             for state in dict_data[repo][ref]:
-                lowstate["%s:%s:%s" % (repo, ref, state)] = dict_data[repo][ref][state]
+                lowstate[f"{repo}:{ref}:{state}"] = dict_data[repo][ref][state]
                 event.fire_event(
                     {
                         "repo": repo,
