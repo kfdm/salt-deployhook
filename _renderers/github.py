@@ -4,6 +4,7 @@ Renderer to convert Github Webhooks into SaltStack Reactors
 """
 import json
 import logging
+
 import salt.utils.event
 
 __opts__ = {}
@@ -45,10 +46,11 @@ def render(dict_data, saltenv="", sls="", tag="", **kwargs):
                 "ref": body["ref"],
                 "sls": sls,
                 "saltenv": saltenv,
+                "reactor": tag,
             },
             "autodeploy/check/github",
         )
-    except:
+    except Exception:
         log.exception("Unable to log check")
 
     for repo in dict_data:
@@ -70,6 +72,7 @@ def render(dict_data, saltenv="", sls="", tag="", **kwargs):
                         "state": dict_data[repo][ref][state],
                         "sls": sls,
                         "saltenv": saltenv,
+                        "reactor": tag,
                     },
                     "autodeploy/found/github",
                 )
